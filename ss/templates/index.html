@@ -1,0 +1,127 @@
+<!-- the message's input -->
+语料：<input id="speech" type="text" /></br>
+地点：<input id="place" type="text" /></br>
+
+Prompt调用链： <input id="flow" type="text"  placeholder="Prompt链"/>
+
+
+</br>
+
+<!-- when clicked then a websocket event will be sent to the server, at this example we registered the 'chat' -->
+<button id="sendBtn" disabled>生成生活流</button>
+
+<!-- the messages will be shown here -->
+<pre id="output"></pre>
+<!-- import the iris client-side library for browser from a CDN or locally.
+     However, `neffos.(min.)js` is a NPM package too so alternatively,
+     you can use it as dependency on your package.json and all nodejs-npm tooling become available:
+     see the "browserify" example for more-->
+ <script src="https://cdn.jsdelivr.net/npm/neffos.js@latest/dist/neffos-es5.js"></script>
+<script>
+    // `neffos` global variable is available now.
+    var scheme = document.location.protocol == "https:" ? "wss" : "ws";
+    var port = document.location.port ? ":" + document.location.port : "";
+    var wsURL = scheme + "://" + document.location.hostname + port + "/ws";
+
+    const enableJWT = true;
+    if (enableJWT) {
+        // This is just a signature and a payload of an example content, 
+        // please replace this with your logic.
+        //
+        // Add a random letter in front of the token to make it
+        // invalid and see that this client is not allowed to dial the websocket server.
+        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjozMjEzMjF9.8waEX7-vPKACa-Soi1pQvW3Rl8QY-SUFcHKTLZI4mvU";
+        wsURL += "?token=" + token;
+    }
+
+    var outputTxt = document.getElementById("output");
+    function addMessage(msg) {
+        outputTxt.innerHTML += msg + "\n\n";
+    }
+
+    function clearHistory() {
+        outputTxt.innerHTML =""
+    }
+
+    function handleError(reason) {
+        console.log(reason);
+        window.alert("error: see the dev console");
+    }
+
+    function handleNamespaceConnectedConn(nsConn) {
+        nsConn.emit("Hello from browser client side!");
+
+        let speech = document.getElementById("speech");
+        let place = document.getElementById("place");
+        let flow = document.getElementById("flow");
+        let sendBtn = document.getElementById("sendBtn");
+
+        sendBtn.disabled = false;
+        sendBtn.onclick = function () {
+            const speechV = speech.value;
+            const placeV = place.value;
+            const flowV = flow.value;
+            // inputTxt.value = "";
+            nsConn.emit("timedew", speechV + "###" + placeV + "###" + flowV);
+            clearHistory()
+            addMessage("开始生成：");
+        };
+    }
+
+    const username = window.prompt("请输入用户名");
+
+    async function runExample() {
+        // You can omit the "default" and simply define only Events, the namespace will be an empty string"",
+        // however if you decide to make any changes on this example make sure the changes are reflecting inside the ../server.go file as well.
+        try {
+            const conn = await neffos.dial(wsURL, {
+                timedew: { // "default" namespace.
+                    _OnNamespaceConnected: function (nsConn, msg) {
+                        addMessage("已连接服务器，欢迎  " + username);
+                        handleNamespaceConnectedConn(nsConn)
+                    },
+                    _OnNamespaceDisconnect: function (nsConn, msg) {
+                        addMessage("与服务器连接已超时断开 " + msg.Namespace);
+                    },
+                    "timedew": function (nsConn, msg) { // "chat" event.
+                        addMessage(msg.Body);
+                    }
+                }
+            },{
+                headers: {
+                    "X-Username": username,
+                }
+            });
+
+            // You can either wait to conenct or just conn.connect("connect")
+            // and put the `handleNamespaceConnectedConn` inside `_OnNamespaceConnected` callback instead.
+            // const nsConn = await conn.connect("default");
+            // nsConn.emit(...); handleNamespaceConnectedConn(nsConn);
+            conn.connect("timedew");
+
+        } catch (err) {
+            handleError(err);
+        }
+    }
+
+    runExample();
+
+    // If "await" and "async" are available, use them instead^, all modern browsers support those,
+    // all of the javascript examples will be written using async/await method instead of promise then/catch callbacks.
+    // A usage example of promise then/catch follows:
+    // neffos.dial(wsURL, {
+    //     default: { // "default" namespace.
+    //         _OnNamespaceConnected: function (ns, msg) {
+    //             addMessage("connected to namespace: " + msg.Namespace);
+    //         },
+    //         _OnNamespaceDisconnect: function (ns, msg) {
+    //             addMessage("disconnected from namespace: " + msg.Namespace);
+    //         },
+    //         chat: function (ns, msg) { // "chat" event.
+    //             addMessage(msg.Body);
+    //         }
+    //     }
+    // }).then(function (conn) {
+    //     conn.connect("default").then(handleNamespaceConnectedConn).catch(handleError);
+    // }).catch(handleError);
+</script>

@@ -1,0 +1,148 @@
+<html lang="en">
+
+<head>
+  <title>ent schema network</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tonsky/FiraCode@5.2/distr/fira_code.css">
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/randomcolor/0.6.1/randomColor.min.js" integrity="sha512-vPeZ7JCboHcfpqSx5ZD+/jpEhS4JpXxfz9orSvAPPj0EKUVShU2tgy7XkU+oujBJKnWmu4hU7r9MMQNWPfXsYw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <style type="text/css">
+    html * {
+      font-family: 'Fira Code', monospace !important;
+      font-size: 14px;
+    }
+
+    #schema {
+      width: 100%;
+      height: 100%;
+      border: 1px solid lightgray;
+    }
+
+    .var-type {
+      color: #4EC9B0;
+    }
+
+    table {
+      padding: 2px 3px;
+    }
+
+    .vis-tooltip,
+    .table-container {
+      background-color: #1e1e1e !important;
+      color: white;
+    }
+
+    tr {
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="schema"></div>
+  <br />
+  <script type="text/javascript">
+    
+    const fieldsToTable = fields => {
+      const container = document.createElement("div");
+      container.setAttribute("class", "table-container")
+      if (!fields) {
+        container.innerText = "no fields";
+        return container;
+      }
+      const tbl = document.createElement("table");
+      const tblBody = document.createElement("tbody");
+      for (const field of fields) {
+        const row = document.createElement("tr");
+        for (const key of ["name", "type"]) {
+          const cell = document.createElement("td");
+          const cellText = document.createTextNode(field[key]);
+          if (key === "type") {
+            cell.setAttribute("class", "var-type")
+          }
+          cell.appendChild(cellText);
+          row.appendChild(cell);
+        }
+        tblBody.appendChild(row);
+      }
+      tbl.appendChild(tblBody);
+      container.appendChild(tbl);
+      return container;
+    }
+
+    
+    const entGraph = JSON.parse("{\"nodes\":[{\"id\":\"Agora_token\",\"fields\":[{\"name\":\"create_time\",\"type\":\"time.Time\"},{\"name\":\"update_time\",\"type\":\"time.Time\"},{\"name\":\"token\",\"type\":\"string\"}]},{\"id\":\"CSField\",\"fields\":[{\"name\":\"create_time\",\"type\":\"time.Time\"},{\"name\":\"update_time\",\"type\":\"time.Time\"},{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"status\",\"type\":\"csfield.Status\"},{\"name\":\"type\",\"type\":\"csfield.Type\"}]},{\"id\":\"Card\",\"fields\":[{\"name\":\"create_time\",\"type\":\"time.Time\"},{\"name\":\"update_time\",\"type\":\"time.Time\"},{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"pic_url\",\"type\":\"string\"},{\"name\":\"thumbnail_url\",\"type\":\"string\"},{\"name\":\"resource_url\",\"type\":\"string\"},{\"name\":\"status\",\"type\":\"card.Status\"},{\"name\":\"type\",\"type\":\"card.Type\"}]},{\"id\":\"Commodity\",\"fields\":[{\"name\":\"create_time\",\"type\":\"time.Time\"},{\"name\":\"update_time\",\"type\":\"time.Time\"},{\"name\":\"name\",\"type\":\"string\"}]},{\"id\":\"Creation\",\"fields\":[{\"name\":\"create_time\",\"type\":\"time.Time\"},{\"name\":\"update_time\",\"type\":\"time.Time\"},{\"name\":\"name\",\"type\":\"string\"}]},{\"id\":\"Device\",\"fields\":[{\"name\":\"create_time\",\"type\":\"time.Time\"},{\"name\":\"update_time\",\"type\":\"time.Time\"},{\"name\":\"type\",\"type\":\"device.Type\"},{\"name\":\"code\",\"type\":\"string\"},{\"name\":\"push_token\",\"type\":\"string\"}]},{\"id\":\"Message\",\"fields\":[{\"name\":\"create_time\",\"type\":\"time.Time\"},{\"name\":\"update_time\",\"type\":\"time.Time\"},{\"name\":\"type\",\"type\":\"message.Type\"},{\"name\":\"content\",\"type\":\"string\"}]},{\"id\":\"NFT\",\"fields\":[{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"resource_url\",\"type\":\"string\"}]},{\"id\":\"Rule\",\"fields\":[{\"name\":\"create_time\",\"type\":\"time.Time\"},{\"name\":\"update_time\",\"type\":\"time.Time\"},{\"name\":\"name\",\"type\":\"string\"}]},{\"id\":\"Setting\",\"fields\":[{\"name\":\"create_time\",\"type\":\"time.Time\"},{\"name\":\"update_time\",\"type\":\"time.Time\"},{\"name\":\"name\",\"type\":\"string\"}]},{\"id\":\"Stream\",\"fields\":[{\"name\":\"create_time\",\"type\":\"time.Time\"},{\"name\":\"update_time\",\"type\":\"time.Time\"},{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"type\",\"type\":\"stream.Type\"},{\"name\":\"stream_url\",\"type\":\"string\"}]},{\"id\":\"User\",\"fields\":[{\"name\":\"create_time\",\"type\":\"time.Time\"},{\"name\":\"update_time\",\"type\":\"time.Time\"},{\"name\":\"open_id\",\"type\":\"string\"},{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"avatar\",\"type\":\"string\"},{\"name\":\"sex\",\"type\":\"string\"},{\"name\":\"mobile_no\",\"type\":\"string\"},{\"name\":\"status\",\"type\":\"user.Status\"},{\"name\":\"role\",\"type\":\"user.Role\"}]},{\"id\":\"User_auth\",\"fields\":[{\"name\":\"create_time\",\"type\":\"time.Time\"},{\"name\":\"update_time\",\"type\":\"time.Time\"},{\"name\":\"type\",\"type\":\"user_auth.Type\"},{\"name\":\"email\",\"type\":\"string\"},{\"name\":\"mobile_no\",\"type\":\"string\"},{\"name\":\"password\",\"type\":\"string\"},{\"name\":\"token\",\"type\":\"string\"}]},{\"id\":\"User_history\",\"fields\":[{\"name\":\"create_time\",\"type\":\"time.Time\"},{\"name\":\"update_time\",\"type\":\"time.Time\"},{\"name\":\"type\",\"type\":\"user_history.Type\"},{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"resource_url\",\"type\":\"string\"}]}],\"edges\":[{\"from\":\"CSField\",\"to\":\"User\",\"label\":\"users\"},{\"from\":\"Card\",\"to\":\"Rule\",\"label\":\"rule\"},{\"from\":\"Commodity\",\"to\":\"Card\",\"label\":\"card\"},{\"from\":\"Commodity\",\"to\":\"NFT\",\"label\":\"NFT\"},{\"from\":\"User\",\"to\":\"User_auth\",\"label\":\"user_auth\"},{\"from\":\"User\",\"to\":\"Card\",\"label\":\"card\"},{\"from\":\"User\",\"to\":\"Message\",\"label\":\"message\"},{\"from\":\"User\",\"to\":\"User\",\"label\":\"friends\"},{\"from\":\"User\",\"to\":\"Device\",\"label\":\"device\"},{\"from\":\"User\",\"to\":\"User_history\",\"label\":\"history\"},{\"from\":\"User\",\"to\":\"Agora_token\",\"label\":\"token\"},{\"from\":\"User\",\"to\":\"Creation\",\"label\":\"creation\"},{\"from\":\"User\",\"to\":\"Setting\",\"label\":\"setting\"},{\"from\":\"User\",\"to\":\"NFT\",\"label\":\"nft\"},{\"from\":\"User\",\"to\":\"Stream\",\"label\":\"stream\"}]}");
+    const nodes = new vis.DataSet((entGraph.nodes || []).map(n =>
+    ({
+      id: n.id,
+      label: n.id,
+      color: randomColor({
+        luminosity: 'light',
+        hue: 'random',
+      }),
+      title: fieldsToTable(n.fields),
+    })
+    ));
+    edgesCounter = {};
+    
+    
+    const edgeKey = e => `${e.to}::${e.from}`
+    const edges = new vis.DataSet((entGraph.edges || []).map(e => {
+      const counter = (edgesCounter[edgeKey(e)] || 0) + 1;
+      edgesCounter[edgeKey(e)] = counter;
+      if (e.from === e.to) {
+        return {
+          ...e,
+          physics: false,
+          arrows: "to",
+          type: 'curvedCW',
+          selfReference: {
+            size: (counter + 1) * 10,
+            angle: (counter * 0.8) * Math.PI / 4,
+            renderBehindTheNode: false
+          }
+        }
+      }
+      return { ...e, type: 'curvedCW', physics: false, arrows: "to", smooth: { type: 'curvedCW', roundness: Math.pow(-1, counter) * 0.2 * counter } }
+    }));
+    const options = {
+      manipulation: false,
+      edges: {
+        physics: false,
+        smooth: { type: 'curvedCW', roundness: 0.2 },
+        arrows: "to",
+      },
+      nodes: {
+        widthConstraint: 60,
+        heightConstraint: 60,
+        shape: "box",
+        font: { align: "center" },
+      },
+      layout: {
+        improvedLayout: true,
+        hierarchical: {
+          enabled: true,
+          levelSeparation: 250,
+        },
+      },
+      physics: {
+        enabled: true,
+        barnesHut: {
+          springConstant: 0,
+          avoidOverlap: 1,
+          springConstant: 0
+        },
+        solver: "barnesHut",
+        repulsion: {
+          nodeDistance: 150,
+          springConstant: 0,
+          damping: 0,
+          springLength: 0
+        }
+      }
+    };
+    const container = document.getElementById("schema");
+    const gph = new vis.Network(container, { nodes, edges }, options);
+  </script>
+</body>
+
+</html>

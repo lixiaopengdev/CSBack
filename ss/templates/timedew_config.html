@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>配置卡片</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #eee;
+		}
+
+		h1 {
+			text-align: center;
+			margin-top: 50px;
+			color: #333;
+		}
+
+		form {
+			width: 50%;
+			margin: 50px auto;
+			padding: 20px;
+			background-color: #fff;
+			border-radius: 5px;
+			box-shadow: 0 0 10px #ccc;
+		}
+
+		label {
+			display: block;
+			margin-bottom: 10px;
+			color: #666;
+		}
+
+		input[type="file"] {
+			margin-bottom: 20px;
+		}
+
+		input[type="submit"] {
+			background-color: #4CAF50;
+			color: #fff;
+			padding: 10px;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+			transition: background-color 0.3s ease;
+		}
+
+		input[type="submit"]:hover {
+			background-color: #3e8e41;
+		}
+	</style>
+</head>
+<body>
+	<h1>TimeDew配置</h1>
+
+	<form action="timedew_config?tk=neoworld503" enctype="multipart/form-data" method="POST">
+		<!-- <label for="file">选择文件：</label>
+		<input type="file" id="file" multiple="multiple" name="file"><br><br> -->
+		<label for="name">输入测试用户名字</label>
+        <input name="name" type="text" value="{{.name}}">
+		<label for="speech">输入测试识别的语音</label>
+        <input name="speech" type="text" value="{{.speech}}">
+		<label for="place">输入测试识别的地点</label>
+        <input name="place" type="text" value="{{.place}}">
+
+		<label for="report_time_switch">客户端上报时间隔阈值（单位： 分钟）</label>
+        <input name="report_time_switch" type="text" value="{{.report_time_switch}}">
+		<label for="gen_time_switch">服务端触发生成时间隔阈值（单位： 分钟）</label>
+        <input name="gen_time_switch" type="text" value="{{.gen_time_switch}}">
+		<label for="duration">生成时追溯多久的历史（单位： 分钟）</label>
+        <input name="duration" type="text" value="{{.duration}}">
+		<label for="word_switch">服务端触发生成字数阈值</label>
+        <input name="word_switch" type="text" value="{{.word_switch}}">
+		<label for="batch_no">服务端一次返回生活流条数</label>
+        <input name="batch_no" type="text" value="{{.batch_no}}">
+		<label for="rec_switch">是否启用推荐,填入 Y/N）</label>
+		<input name="rec_switch" type="text" value="{{.rec_switch}}">
+		<label for="name_replace_switch">用户名替换（避免用户名影响内容的生成,填入 Y/N）</label>
+		<input name="name_replace_switch" type="text" value="{{.name_replace_switch}}">
+
+		
+		<label for="gen_pic_host">生图SD访问地址</label>
+        <input name="gen_pic_host" type="text" value="{{.gen_pic_host}}">
+		<label for="gen_pic_prefix">生图prompt前缀</label>
+        <input name="gen_pic_prefix" type="text" value="{{.gen_pic_prefix}}">
+		<label for="gen_pic_subfix">生图prompt后缀</label>
+        <input name="gen_pic_subfix" type="text" value="{{.gen_pic_subfix}}">
+		<label for="gen_pic_rate">生图比例（0为不生成，100为必生成）</label>
+        <input name="gen_pic_rate" type="text" value="{{.gen_pic_rate}}">
+		<label for="gen_pic_upscale">超分参数</label>
+        <input name="gen_pic_upscale" type="text" value="{{.gen_pic_upscale}}">
+		<label for="show_pic_rate">前端展示图片比例</label>
+        <input name="show_pic_rate" type="text" value="{{.show_pic_rate}}">
+
+	
+	
+		<label for="route_switch">生成流程切换</label>
+        <select id="route_switch">
+			<option value="fixed">初版硬编码</option>
+			<option value="file">上传prompt文本流</option>
+			<option value="custom">占位</option>
+		  </select>
+        <label for="seq">生成流程(按序填写，逗号分隔)</label>
+        <input name="seq" type="text" value="{{.seq}}">
+        <label for="pro1">Prompt1</label>
+        <input name="pro1" type="text" value="{{.pro1}}">
+		</br>
+
+		<input type="submit" value="试生成并保存配置">
+		</br>
+		<a href="check_timedew?tk=neoworld503" >查看生成生活流数据与生成过程</a>
+	</br>
+	<a href="timedews_web?tk=neoworld503" >生活流web页</a>
+
+	</form>
+
+	<form action="upload_prompt?tk=neoworld503" enctype="multipart/form-data" method="POST">	
+        <input name="type" type="hidden" value="prompt">	
+		<label for="name">用户名字: {{.name}}</label>
+		<label for="speech">语音转成文本: {{.speech}}</label>
+		<label for="place">地点:  {{.place}}</label>
+		<label for="state">状态:  {{.state}}</label>
+		<label for="file">选择文件：</label>
+		<input type="file" id="file" multiple="multiple" name="file"><br>
+		<input type="submit" value="上传 prompt 文件">
+	</form>
+
+</body>
+</html>

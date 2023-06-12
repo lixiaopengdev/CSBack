@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>配置卡片</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #eee;
+		}
+
+		h1 {
+			text-align: center;
+			margin-top: 50px;
+			color: #333;
+		}
+
+		form {
+			width: 50%;
+			margin: 50px auto;
+			padding: 20px;
+			background-color: #fff;
+			border-radius: 5px;
+			box-shadow: 0 0 10px #ccc;
+		}
+
+		label {
+			display: block;
+			margin-bottom: 10px;
+			color: #666;
+		}
+
+		input[type="file"] {
+			margin-bottom: 20px;
+		}
+
+		input[type="submit"] {
+			background-color: #4CAF50;
+			color: #fff;
+			padding: 10px;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+			transition: background-color 0.3s ease;
+		}
+
+		input[type="submit"]:hover {
+			background-color: #3e8e41;
+		}
+	</style>
+</head>
+<body>
+	<h1>配置卡片</h1>
+
+	<form action="card?tk=neoworld503" enctype="multipart/form-data" method="POST">
+		<label for="file">选择文件：</label>
+		<input type="file" id="file" multiple="multiple" name="file"><br><br>
+        <label for="name">卡片名称</label>
+        <input name="name" type="text">
+        <label for="description">卡片描述</label>
+        <input name="description" type="text">
+		<input type="submit" value="上传">
+	</form>
+
+</body>
+</html>
